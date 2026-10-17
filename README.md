@@ -58,6 +58,10 @@ python3 -m unittest discover -s tools -v
 
 Do not place a real frame address in source files, documentation, issues, or commits.
 
+For recurring connection failures, see [connection troubleshooting](docs/connection-troubleshooting.md).
+It distinguishes host ADB permission failures, offline protocol sessions, and basic
+LAN reachability problems; they require different investigations.
+
 ## Privacy
 
 Enable the repository's pre-commit checks after cloning:

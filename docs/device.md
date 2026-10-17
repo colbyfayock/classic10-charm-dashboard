@@ -45,6 +45,11 @@ physical power disconnection of more than 15 seconds. After reconnection, the mo
 and firmware matched, boot completion was reported, and the shell was still root.
 No USB connection, boot patch, vendor command, or on-screen authorization was required.
 
+Network access has also failed intermittently between sessions. Address changes,
+host-specific ADB failures, and unresolved LAN reachability have been observed;
+there is no confirmed single root cause. See [connection troubleshooting](connection-troubleshooting.md)
+before repeating reboots, changing ADB configuration, or applying another frame's fixes.
+
 ## Compatibility notes
 
 - The upstream Home HQ kiosk currently requires API 23 and cannot install on this API 19 frame.
