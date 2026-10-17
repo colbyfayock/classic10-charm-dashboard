@@ -142,6 +142,22 @@ time, synchronization delay, and RTC persistence remain untested.
 - Recovery executable `/system/bin/recovery` is present. Recovery entry, behavior,
   and restore have not been tested; no recovery reboot was performed.
 
+### Capture observations
+
+Both 4 MiB hardware boot areas have been captured privately. Each passed exact-size
+checks, matching independent device SHA-256 before and after transfer, complete gzip
+readback, and uniform-filler checks.
+
+Legacy ADB sync took approximately 27 seconds per boot area. Enabling TCP_NODELAY
+on the host relay did not improve this measurement. Device-side gzip plus hex
+encoding captured one boot area in approximately 0.88 seconds and matched the sync
+capture and independent device hashes. These small, highly compressible captures
+do not predict an exact completion time for the whole disk.
+
+The full eMMC capture is in progress. Its independent partition checks have not
+passed yet. See [host backup tools](../tools/README.md) for the capture and verification
+commands. No images or capture hashes are included in this repository.
+
 ## Current verification status
 
 - Device identity: verified
@@ -150,6 +166,7 @@ time, synchronization delay, and RTC persistence remain untested.
 - Persistence after power loss: verified on this unit
 - Static storage and hardware inventory: complete on this unit
 - Physical navigation, recovery entry, and browser rendering: deferred until after backup
-- Verified private backup: pending
+- Hardware boot-area backups: captured and verified
+- Full eMMC backup and independent partition comparisons: in progress
 - Dashboard browser selection: pending
 - Automatic dashboard startup: pending
