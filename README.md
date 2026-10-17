@@ -77,6 +77,11 @@ or unlabeled identifier. Revoke any credential accidentally published.
 
 Run `python3 tools/privacy_check.py --staged` to check the index manually.
 
+Local device backups may be kept in the ignored `backups/` directory with
+owner-only permissions. Never force-add backup files, copy their contents into
+tracked files, or bypass the privacy hook. This is a local storage convention,
+not permission to publish firmware or device data.
+
 Public reports must not contain:
 
 - Serial numbers, MAC addresses, eMMC CIDs, or other unique identifiers

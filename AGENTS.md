@@ -24,7 +24,11 @@ This repository contains tools and documentation for a physical Android photo fr
 
 Never commit or publish serial numbers, MAC addresses, IP addresses tied to a device, Wi-Fi details, credentials, tokens, eMMC CIDs, whole-disk hashes, raw sectors, backups, firmware dumps, vendor APKs, or personal dashboard data.
 
-Store private artifacts outside this repository. Before committing, inspect every changed file and image for private information.
+Store private artifacts outside this repository, except for owner-approved local
+backups under the Git-ignored `backups/` directory. Restrict that directory to its
+owner, verify Git ignores every output, and never force-add it or bypass privacy
+checks. No private backup data belongs in tracked documentation or test fixtures.
+Before committing, inspect every changed file and image for private information.
 
 ## Development
 
