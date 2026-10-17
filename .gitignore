@@ -1,0 +1,40 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+
+node_modules/
+dist/
+build/
+coverage/
+__pycache__/
+*.pyc
+
+# Private device records and diagnostics
+backups/
+diagnostics/
+frames/
+private/
+logs/
+
+# Firmware, storage, app, and credential artifacts
+*.img
+*.img.gz
+*.bin
+*.dump
+*.raw
+*.apk
+*.apks
+*.aab
+*.ab
+adbkey
+adbkey.pub
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+
+# Common secret exports
+*.secrets.json
+credentials.json
+secrets.json
