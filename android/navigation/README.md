@@ -4,9 +4,10 @@ An original, small navigation helper for the Classic10 Charm's stock Android 4.4
 It provides floating **Back**, **Home**, **Move**, and **Hide** controls after explicit
 local opt-in and manual accessibility-service enablement.
 
-**Status:** built and inspected on the Mac. Not installed, enabled, or tested on the
-frame. A successful build is not proof of physical navigation or reboot persistence.
-It does not upgrade or secure the obsolete underlying OS.
+**Status:** installed from the inspected artifact and manually enabled by the owner.
+Physical Back, Home, Move, and Hide/Start tests passed on this unit. Reboot persistence
+and full service revocation/uninstall remain untested. The helper does not upgrade
+or secure the obsolete underlying OS.
 
 ## Privilege boundaries
 
@@ -80,7 +81,8 @@ never committed or placed on the frame by the build script.
 | APK SHA-256 | `a72fbfc7df575b0bcb04eef548fcb84820db5d301528bad1a1875d0177e6b6f7` |
 | Signing certificate SHA-256 | `91785fc2368daf0e34d50bb1ed64bb88f2ddf056b21199bef5673a03538d3fd1` |
 | API 19 v1 signature verification | Passed |
-| Installed or physically tested | No |
+| Installed and owner-enabled | Yes, on the tested frame |
+| Physical controls confirmed | Back, Home, Move, Hide/Start |
 
 The local artifact is in
 `backups/navigation-builds/20261017T184011Z-e68e10/frame-controls.apk`.
@@ -96,12 +98,25 @@ manifest privileges, absence of Home/boot registration, and the accessibility pr
 contract. SDK extraction tests cover pins, traversal, symlinks, and preservation of
 existing mismatched files. The full host suite currently has 37 passing tests.
 
-Compiled source and inspected manifests do not prove this vendor firmware will bind
-the service, grant the overlay, keep it alive, or perform Back/Home correctly. No
-emulator or device runtime test has been performed. Vendor lifecycle behavior,
-rotation, touch movement, keyboard interaction, and recovery after reboot still need
-physical tests. There is no automatic secure-settings repair if the vendor disables
-the service.
+The owner confirmed the visible overlay, Home to VPhoto, dragging, Hide followed by
+Start, and Back from Display settings to VPhoto. Preferred/Home records and existing
+VPhoto/Settings/SystemUI enabled states remained unchanged. The initial ambiguous
+Back response was not counted until the distinct Display-page test passed.
+
+The first install failed with `INSTALL_FAILED_INVALID_URI`: KitKat's separate
+default-container UID could not read the group-restricted staging path. Giving
+read/traverse access to the temporary non-secret APK path allowed installation;
+installed bytes matched the approved hash and staging was removed. No system
+security setting was changed to bypass the error.
+
+The first Start interaction returned to VPhoto for an unproven reason. Its opt-in
+preference was saved and no helper crash was seen in the reviewed log. Opening
+Android Accessibility directly and manually enabling the service worked; the later
+Hide/Start cycle also worked. Do not infer a firmware lifecycle fix from this.
+
+Vendor lifecycle behavior, rotation, keyboard interaction, recovery after reboot,
+and full accessibility revocation/uninstall still need tests. There is no automatic
+secure-settings repair if the vendor disables the service.
 
 ## Future installation/test gate
 

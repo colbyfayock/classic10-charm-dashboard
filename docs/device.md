@@ -166,6 +166,31 @@ installed or disabled and no default Home was changed. ADB fallback is proven, b
 usable touch navigation before replacing Home or treating this as a general-purpose
 browser device. Browser and firmware recovery behavior remain untested.
 
+### Approved interim application trial
+
+Frame Controls 0.1.0 (`com.colbyfayock.framecontrols`) was installed from the exact
+inspected API 19 artifact and manually enabled by the owner. Physical Home to VPhoto,
+dragging, Hide followed by Start, and Back from Display settings to VPhoto passed.
+Post-test preferred/Home records and existing VPhoto/Settings/SystemUI enabled states
+matched the private pre-install baseline. See the [helper documentation](../android/navigation/README.md).
+
+KISS 3.24.2 was later installed under an explicit permission/test approval. Its actual
+API 15 minimum, v1 signature, F-Droid certificate, and installed bytes were verified.
+Navigation accessibility and Home records remained unchanged after installation and
+explicit launch. The launch command reported success, but a later focus check found
+VPhoto foreground again. No KISS fatal crash was seen in the reviewed log; the reason
+for the foreground return is unproven. No permanent Home was selected and physical
+launcher/chooser testing awaits the owner.
+
+Firefox 68.11.0's official bytes, API 16 minimum, ARMv7 libraries, v1 signature, and
+launcher alias were inspected on the Mac. It is not installed: actual manifest
+permissions include account/sync access, system-settings writes, location, storage,
+overlay, camera, and microphone capabilities not fully disclosed in the initial
+batch discussion. The owner must decide on that broader legacy permission scope.
+No launcher/browser account login, vendor disablement, system edit, or firmware
+change was performed. Reboot persistence and full helper revocation/uninstall remain
+untested.
+
 ## Browser and clock baseline
 
 AOSP Browser reports Android 4.4.2 / API 19. WebView is integrated through
@@ -242,10 +267,11 @@ capture is not proof that a device can be restored from it.
 - Persistence after power loss: verified on this unit
 - Static storage and hardware inventory: complete on this unit
 - Settings/VPhoto ADB navigation: tested with owner screen confirmation
-- Physical Back/Home navigation: unavailable in the tested Settings screen; unresolved
+- Stock Back/Home: absent; the approved helper passed physical navigation tests
 - Recovery entry and browser rendering: not tested
 - Hardware boot-area backups: captured and verified
 - Full eMMC backup and independent partition comparisons: passed on this unit
 - Firmware restore: not tested
-- Dashboard browser selection: pending
+- Launcher: KISS 3.24.2 installed; physical trial/default choice pending
+- Browser: official legacy Firefox inspected; installation held for permission review
 - Automatic dashboard startup: pending

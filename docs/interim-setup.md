@@ -1,8 +1,10 @@
 # Proposed reversible interim browser setup
 
-Research date: 2026-10-17. **Nothing described below has been installed or enabled.**
-The owner approved researching an interim setup while waiting for a mini-USB data
-cable. Each installation or setting change still needs specific approval.
+Research date: 2026-10-17. **Frame Controls is installed, owner-enabled, and physically
+tested. KISS is installed with physical testing pending. Firefox is not installed.**
+The owner approved a reversible interim setup while waiting for a mini-USB cable.
+Change/test scopes may be batched with explicit permissions, rollback, and time
+estimates; unexpected material permission changes still require review.
 
 Long-term goal: [owner-controlled replacement OS](os-feasibility.md). This interim
 setup does not make Android 4.4 security-supported, and it does not justify signing
@@ -22,9 +24,10 @@ Prerequisites already verified:
 - Explicit VPhoto launch returns to the stock photo app.
 - Home resolves to VPhoto and preferred/enabled states remained unchanged in testing.
 
-**Unresolved prerequisite:** no obvious physical or on-screen Back/Home control was
-available in Settings. ADB-only escape is insufficient. Solve this before calling
-the browser/launcher setup usable or replacing the default Home experience.
+The stock firmware lacked obvious physical/on-screen Back/Home controls in Settings.
+The approved helper now supplies owner-confirmed Back/Home escape, Move, and
+Hide/Start. Reboot persistence remains untested. Do not infer a physical escape path
+solely from ADB, source, or build checks.
 
 ## Candidate 1: minimal API 19 navigation helper
 
@@ -33,7 +36,7 @@ controls. This reuses the upstream recovery concept, not its newer-Android binar
 
 The source implementation and host build are now available in
 [`android/navigation/`](../android/navigation/README.md). The constraints below are
-implemented/inspected on the host, not yet proven through physical frame tests:
+implemented/inspected on the host; basic navigation also passed owner physical tests:
 
 - Minimum API 19; compile-time and runtime checks against that minimum.
 - Legacy overlay window support, not API 26 `TYPE_APPLICATION_OVERLAY` or notification
@@ -53,9 +56,9 @@ Home HQ kiosk requires API 23. Neither is a direct API 19 install candidate.
 
 The host build compiled against the actual API 19 platform and passed v1 signature,
 SDK, permission, and packaged-accessibility inspection. The exact APK/hash and
-private-key handling are documented in its README. Runtime navigation, overlay
-permission, service binding, and reboot persistence remain untested. Nothing has
-been installed or enabled on the frame.
+private-key handling are documented in its README. Runtime Back/Home, overlay,
+dragging, and Hide/Start passed after owner-manual service enablement. Reboot
+persistence and full service revocation/uninstall remain untested.
 
 ## Candidate 2: KISS Launcher 3.24.2
 
@@ -90,11 +93,14 @@ per-permission runtime denial**, so do not promise the contacts/phone permission
 can simply be declined after installation. Disclose this before asking for approval.
 Avoid importing contacts/accounts; no personal-data inspection has been performed.
 
-The APK has not yet been downloaded or its actual signature checked. Repository
-metadata over the official HTTPS endpoint is not an independently verified repository
-signing chain. Before installing, verify downloaded bytes, actual API/ABI metadata,
-v1 signing validity, certificate fingerprint, permissions, and declared activities.
-Runtime behavior and landscape usability remain untested on this frame.
+The actual APK matched the pinned bytes, API 15 metadata, valid API-19 v1 signature,
+and expected F-Droid certificate/permissions before the approved installation.
+Installed bytes match. Explicit launch of `fr.neamar.kiss/.MainActivity` reported
+success, but a subsequent focus check found VPhoto foreground again. The cause is
+not established; no fatal KISS crash was seen in the reviewed log. Navigation and
+preferred/Home records stayed unchanged. Physical UI/chooser testing is pending;
+no permanent Home was selected. Repository signing-chain verification is distinct
+from the checked exact artifact and certificate pins.
 
 OpenLauncher was considered: its source has API 17 support, but its maintainers
 explicitly mark the project discontinued. It is not preferred simply because it
@@ -120,9 +126,19 @@ or performance. Compatibility has not been tested on this unit. Test only a loca
 static page and non-sensitive public sites initially. No Firefox account login,
 saved credentials, sensitive tokens, or personal-account sessions should be used.
 
-The actual APK's minSdk, ARM libraries, signature, and launcher activity still need
-inspection before installation. Do not copy a Fenix-era activity name from the
-Modern10 instructions without checking this older Fennec APK.
+The actual APK matched the official hash, declares API 16 minimum, contains ARMv7
+libraries, and verifies v1 signing for API 19. Inspected signing-certificate SHA-256:
+`a78b62a5165b4494b2fead9e76a280d22d937fee6251aece599446b2ea319b04`.
+Its `.App` launcher alias targets `org.mozilla.gecko.LauncherActivity`; this was read
+from the artifact, not assumed from the newer guide.
+
+**Installation is held for a material permission decision.** The actual manifest
+also requests account/authentication/sync access, system-settings writes, Wi-Fi
+changes, location, external storage, overlay, camera, and microphone capabilities.
+Some permissions are normal/signature-only/unknown on this old OS, but KitKat lacks
+normal modern runtime denial for its dangerous permissions. These broad legacy
+capabilities were not fully disclosed in the initial batch approval. Do not silently
+install it while the owner is away or describe the official artifact as malware.
 
 ## Approval and test sequence
 
@@ -166,9 +182,8 @@ Modern10 instructions without checking this older Fennec APK.
 
 ## Current decision gate
 
-Research identifies plausible launcher/browser choices, and the API 19 helper has
-been built and inspected on the host. This does **not** establish frame runtime
-behavior or satisfy the final security goal. The next proposal is an exact helper
-installation approval, followed separately by manual accessibility enablement and
-physical tests—not installation of all components at once. No interim app,
-accessibility service, OS image, or system configuration has been installed or enabled.
+The helper's initial physical navigation gate passed. KISS is installed and ready
+for owner-present UI/Just-once chooser tests; it is not yet a proven stable launcher
+on this vendor firmware. Firefox's artifact checks passed but installation is held
+for the broader permission decision. No sensitive login, permanent Home, vendor
+disablement, system edit, or replacement-OS change is approved by these trial steps.

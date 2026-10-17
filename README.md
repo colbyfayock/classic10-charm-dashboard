@@ -17,9 +17,11 @@ This project is under active investigation. The tested frame currently has:
 The private backup is now complete and independently verified. Current research
 compares an [owner-controlled replacement OS](docs/os-feasibility.md) with a
 [reversible interim browser setup](docs/interim-setup.md) adapted from the upstream
-Modern10 guide. No replacement OS or interim app has been installed; stock Android
-4.4 is not treated as a secure personal-account browsing environment. VPhoto remains
-available as a fallback while the stock system is used for reversible testing.
+Modern10 guide. Frame Controls is installed and physically tested; KISS is installed
+with physical launcher tests pending. Firefox remains uninstalled pending its broader
+legacy permission decision. No replacement OS has been installed. Stock Android 4.4
+is not treated as a secure personal-account browsing environment; VPhoto remains
+available as a fallback during reversible testing.
 
 > [!WARNING]
 > Network ADB on the tested firmware is root and does not require host authorization. Keep the frame on a trusted or isolated network. Never expose TCP 5555 to the internet.
