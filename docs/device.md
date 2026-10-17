@@ -2,6 +2,32 @@
 
 This document contains sanitized observations from one unit. Devices sold under the same retail name may contain different hardware or firmware. Confirm every identity field before applying instructions.
 
+## Purchase reference
+
+Owner-confirmed purchased listing:
+[Dragon Touch 10.1-inch Wi-Fi Digital Picture Frame — 1280×800 HD IPS touchscreen](https://www.amazon.com/dp/B0D9Q89D3K)
+(Amazon ASIN `B0D9Q89D3K`). The title is the description supplied by the owner;
+the current listing has not been independently checked.
+
+Metadata the owner reports copying from the Amazon product page:
+
+| Field | Reported value |
+| --- | --- |
+| Manufacturer | Dragon Touch |
+| Amazon-reported model number | `809cfd61-b795-4488-81bb-c20ec48e6016` |
+| UPC | `850045550981` |
+
+The UPC has a valid UPC-A check digit; that checks its format, not product identity
+or hardware compatibility. These catalog details do not replace the Android model
+and firmware identity measured below.
+
+The UUID-shaped model number is recorded as a shared listing/catalog field based
+on the owner's source confirmation, not as a device serial or the Android model.
+
+This identifies the purchased product listing, not a guarantee that other units
+ship with the same board, Android version, firmware, or access method. No order,
+account, or unique device details are included.
+
 ## Identity
 
 | Property | Observed value |
@@ -117,8 +143,25 @@ VPhoto declares the normal Home component
 `com.waophoto.smartframe/.ui.SplashActivity`. Additional Home declarations belong
 to Android's provisioning and encryption components, not general-purpose launchers.
 The stock Settings component is `com.android.settings/.Settings`; Browser declares
-`com.android.browser/.BrowserActivity`. These were identified from package metadata,
-not launched or tested for physical recovery.
+`com.android.browser/.BrowserActivity`.
+
+### Navigation tests on the stock firmware
+
+- Explicitly launching `com.android.settings/.Settings` opened Android Settings;
+  the owner confirmed it was visible on the physical panel.
+- The owner reported no obvious physical or on-screen Back/Home control there.
+- Explicitly launching `com.waophoto.smartframe/.ui.SplashActivity` returned to
+  VPhoto's `.ui.MainActivity`; the owner confirmed the photo application was visible.
+- Invoking MAIN with the HOME category resolved to VPhoto. The saved preferred
+  activity records and VPhoto/SystemUI/Settings enabled states were unchanged.
+- `qemu.hw.mainkeys` was unset. This does not establish a safe runtime toggle for
+  the navigation bar or prove what firmware resource controls its absence.
+
+An exact private package-state baseline was saved before the tests. No app was
+installed or disabled and no default Home was changed. ADB fallback is proven, but
+**a physical escape path from other apps is not yet established**. Provide and test
+usable touch navigation before replacing Home or treating this as a general-purpose
+browser device. Browser and firmware recovery behavior remain untested.
 
 ## Browser and clock baseline
 
@@ -195,7 +238,9 @@ capture is not proof that a device can be restored from it.
 - Persistence after software reboot: verified
 - Persistence after power loss: verified on this unit
 - Static storage and hardware inventory: complete on this unit
-- Physical navigation, recovery entry, and browser rendering: not yet tested
+- Settings/VPhoto ADB navigation: tested with owner screen confirmation
+- Physical Back/Home navigation: unavailable in the tested Settings screen; unresolved
+- Recovery entry and browser rendering: not tested
 - Hardware boot-area backups: captured and verified
 - Full eMMC backup and independent partition comparisons: passed on this unit
 - Firmware restore: not tested
