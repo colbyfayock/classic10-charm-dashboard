@@ -138,7 +138,7 @@ time, synchronization delay, and RTC persistence remain untested.
   This verifies a small regular-file transfer, not a complete block-device backup.
 - A synthetic four-byte payload containing NUL, LF, CR, and a high byte survived
   BusyBox hexadecimal encoding, PTY transfer, and host decoding exactly. Encoded
-  shell transfer is a fallback candidate, not yet a tested full-disk capture path.
+  shell transfer was subsequently used for the verified chunked capture below.
 - Recovery executable `/system/bin/recovery` is present. Recovery entry, behavior,
   and restore have not been tested; no recovery reboot was performed.
 
@@ -154,9 +154,9 @@ encoding captured one boot area in approximately 0.88 seconds and matched the sy
 capture and independent device hashes. These small, highly compressible captures
 do not predict an exact completion time for the whole disk.
 
-The full eMMC capture was stopped at the owner's request before completion. The
-retained `.partial` file is not a verified backup, and the current tool cannot
-resume it. Independent whole-image partition comparisons have not passed. See
+The initial single-stream eMMC attempt was stopped at the owner's request before
+completion. Its retained `.partial` file is not a verified backup and cannot be
+resumed by the chunked tool. That attempt never passed full-image verification. See
 [host backup tools](../tools/README.md) for capture and verification commands.
 No images or capture hashes are included in this repository.
 
@@ -164,10 +164,24 @@ A resumable replacement now captures independently verified 64 MiB eMMC chunks
 with private atomic checkpoints. Host-side interruption/resume tests pass. Two
 bounded hardware runs also passed: the first captured boot0 and stopped; the second
 revalidated and skipped boot0, captured boot1, and stopped. Both boot areas matched
-independent device hashes. The remaining eMMC chunks are now being captured;
-complete coverage and final independent comparisons are still pending. The prior
-interrupted single-stream capture and original hardware boot-area copies remain
-untouched. See the host tools guide for start/resume commands and snapshot limits.
+independent device hashes. On 2026-10-17, the resumable session completed all
+237 parts: 235 eMMC chunks plus both hardware boot areas.
+
+Final verification passed:
+
+- Exact, gap-free coverage of 15,758,000,128 user-area bytes and both 4,194,304-byte
+  hardware boot areas.
+- Full gzip readback, raw SHA-256 checks, and uniform-filler checks for every chunk.
+- Fresh device hashes matched both hardware boot areas.
+- Seven independent device reads matched saved image ranges: disk header,
+  bootloader, env, boot, recovery, and two 32 MiB system samples.
+
+The complete session occupies approximately 325.5 MiB compressed on this unit.
+All images and private checkpoints remain owner-only and Git-ignored. The prior
+interrupted attempt is retained separately and must not be mistaken for this
+verified session. This is a **verified live capture, not an atomic filesystem
+snapshot**. Firmware restore and recovery flashing remain untested; successful
+capture is not proof that a device can be restored from it.
 
 ## Current verification status
 
@@ -176,8 +190,9 @@ untouched. See the host tools guide for start/resume commands and snapshot limit
 - Persistence after software reboot: verified
 - Persistence after power loss: verified on this unit
 - Static storage and hardware inventory: complete on this unit
-- Physical navigation, recovery entry, and browser rendering: deferred until after backup
+- Physical navigation, recovery entry, and browser rendering: not yet tested
 - Hardware boot-area backups: captured and verified
-- Full eMMC backup and independent partition comparisons: resumable capture in progress
+- Full eMMC backup and independent partition comparisons: passed on this unit
+- Firmware restore: not tested
 - Dashboard browser selection: pending
 - Automatic dashboard startup: pending
