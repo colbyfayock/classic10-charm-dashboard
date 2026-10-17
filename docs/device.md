@@ -161,9 +161,12 @@ resume it. Independent whole-image partition comparisons have not passed. See
 No images or capture hashes are included in this repository.
 
 A resumable replacement now captures independently verified 64 MiB eMMC chunks
-with private atomic checkpoints. Its host-side interruption/resume tests pass;
-initial hardware checkpoint testing is pending device connectivity. The prior
-interrupted single-stream capture and verified hardware boot-area copies remain
+with private atomic checkpoints. Host-side interruption/resume tests pass. Two
+bounded hardware runs also passed: the first captured boot0 and stopped; the second
+revalidated and skipped boot0, captured boot1, and stopped. Both boot areas matched
+independent device hashes. The remaining eMMC chunks are now being captured;
+complete coverage and final independent comparisons are still pending. The prior
+interrupted single-stream capture and original hardware boot-area copies remain
 untouched. See the host tools guide for start/resume commands and snapshot limits.
 
 ## Current verification status
@@ -175,6 +178,6 @@ untouched. See the host tools guide for start/resume commands and snapshot limit
 - Static storage and hardware inventory: complete on this unit
 - Physical navigation, recovery entry, and browser rendering: deferred until after backup
 - Hardware boot-area backups: captured and verified
-- Full eMMC backup and independent partition comparisons: incomplete; stopped by owner
+- Full eMMC backup and independent partition comparisons: resumable capture in progress
 - Dashboard browser selection: pending
 - Automatic dashboard startup: pending
