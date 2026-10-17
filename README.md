@@ -14,7 +14,12 @@ This project is under active investigation. The tested frame currently has:
 - VPhoto as the stock Home application
 - Persistent root ADB over Wi-Fi on TCP 5555
 
-The immediate goals are to document the hardware safely, create and verify a private backup, and find a maintainable dashboard or kiosk approach compatible with Android 4.4.2. VPhoto will remain available as a fallback.
+The private backup is now complete and independently verified. Current research
+compares an [owner-controlled replacement OS](docs/os-feasibility.md) with a
+[reversible interim browser setup](docs/interim-setup.md) adapted from the upstream
+Modern10 guide. No replacement OS or interim app has been installed; stock Android
+4.4 is not treated as a secure personal-account browsing environment. VPhoto remains
+available as a fallback while the stock system is used for reversible testing.
 
 > [!WARNING]
 > Network ADB on the tested firmware is root and does not require host authorization. Keep the frame on a trusted or isolated network. Never expose TCP 5555 to the internet.

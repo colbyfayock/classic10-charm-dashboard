@@ -135,6 +135,9 @@ will not automatically be an atomic offline snapshot.
   has not been physically tested. Sensor names alone do not establish their usefulness.
 - USB gadget settings report `mtp,adb`, with driver `sunxi_usb_udc`. Physical USB
   data access is untested.
+- Owner reports a full-size USB-A socket and a mini-USB socket. The mini-USB port
+  is the candidate for testing a computer data connection; device-mode wiring is
+  not yet verified. Do not use a USB-A-to-A connection between host ports.
 - Several USB Ethernet modules are loaded; adapter operation is untested.
 - SystemUI is installed and in its default enabled state. A status-bar window is
   present in window policy. Physical navigation and escape paths are not yet proven.
