@@ -40,10 +40,10 @@ service.adb.tcp.port=5555
 uid=0(root) gid=0(root)
 ```
 
-Root network ADB returned after a software reboot. A physical power-cycle was
-requested, but completion was not explicitly confirmed; low uptime proves a recent
-boot, not its cause. Power-loss persistence remains unverified. No USB connection,
-boot patch, vendor command, or on-screen authorization was required.
+Root network ADB returned after both a software reboot and an owner-confirmed
+physical power disconnection of more than 15 seconds. After reconnection, the model
+and firmware matched, boot completion was reported, and the shell was still root.
+No USB connection, boot patch, vendor command, or on-screen authorization was required.
 
 ## Compatibility notes
 
@@ -52,13 +52,104 @@ boot patch, vendor command, or on-screen authorization was required.
 - The stock Android 4.4 browser/WebView is expected to require a legacy-compatible dashboard build.
 - No firmware flash or boot patch is needed to obtain root management access on the tested unit.
 
+## Storage layout
+
+The user-area disk is `/dev/block/mmcblk0`, with 30,777,344 sectors of 512 bytes:
+**15,758,000,128 bytes**. Each hardware boot area (`mmcblk0boot0` and
+`mmcblk0boot1`) is **4,194,304 bytes**, with `ro=1` and `force_ro=1` when inspected.
+
+Partition names came from `/dev/block/by-name`; starts and sizes came from sysfs.
+These are observations, not a flashing procedure.
+
+| Partition | Name | Start sector | Size in sectors | Size in MiB |
+| --- | --- | ---: | ---: | ---: |
+| p2 | bootloader | 73728 | 131072 | 64 |
+| p5 | env | 204800 | 32768 | 16 |
+| p6 | boot | 237568 | 32768 | 16 |
+| p7 | system | 270336 | 1572864 | 768 |
+| p8 | misc | 1843200 | 32768 | 16 |
+| p9 | recovery | 1875968 | 65536 | 32 |
+| p10 | cache | 1941504 | 1048576 | 512 |
+| p11 | metadata | 2990080 | 32768 | 16 |
+| p12 | private | 3022848 | 32768 | 16 |
+| p13 | klog | 3055616 | 32768 | 16 |
+| p14 | alog | 3088384 | 131072 | 64 |
+| p1 | UDISK | 3219456 | 27557888 | 13456 |
+
+The kernel also exposes an unnamed p3 entry at sector 1 with size 2 sectors. Its
+meaning has not been established; do not treat it as an independently understood
+data partition.
+
+> [!WARNING]
+> This firmware's boot partition starts at sector **237568**, not the **172032**
+> used by the PF1007L guides. Do not apply their offsets, boot images, or write scripts.
+
+Observed mounts:
+
+- `/system`: ext4, read-only, from `system`.
+- `/data`: ext4, read-write, from `UDISK`.
+- `/cache`: ext4, read-write, from `cache`.
+- `/logger`: ext4, read-write, from `alog`.
+
+Android remains running during inspection. A live capture of writable filesystems
+will not automatically be an atomic offline snapshot.
+
+## Hardware and navigation inventory
+
+- Kernel: Linux 3.4.39.
+- Wi-Fi: ESP8089 module, interface `wlan0`, SDIO vendor/device `0x6666:0x1111`.
+- Touchscreen: `gslX680`, with the `gslX680new` module loaded.
+- Sensor service reports a temperature sensor, a `pt3r850` light sensor, and a
+  `mir3da` accelerometer. The accelerometer was active; light/temperature behavior
+  has not been physically tested. Sensor names alone do not establish their usefulness.
+- USB gadget settings report `mtp,adb`, with driver `sunxi_usb_udc`. Physical USB
+  data access is untested.
+- Several USB Ethernet modules are loaded; adapter operation is untested.
+- SystemUI is installed and in its default enabled state. A status-bar window is
+  present in window policy. Physical navigation and escape paths are not yet proven.
+
+VPhoto declares the normal Home component
+`com.waophoto.smartframe/.ui.SplashActivity`. Additional Home declarations belong
+to Android's provisioning and encryption components, not general-purpose launchers.
+The stock Settings component is `com.android.settings/.Settings`; Browser declares
+`com.android.browser/.BrowserActivity`. These were identified from package metadata,
+not launched or tested for physical recovery.
+
+## Browser and clock baseline
+
+AOSP Browser reports Android 4.4.2 / API 19. WebView is integrated through
+`/system/lib/libwebviewchromium.so` and `/system/framework/webviewchromium.jar`.
+The exact Chromium engine version and dashboard rendering compatibility remain
+unmeasured; a package version alone is not an engine capability test.
+
+Automatic time and automatic timezone settings are enabled. The device UTC clock
+matched the host to the displayed second when queried after boot. Initial cold-boot
+time, synchronization delay, and RTC persistence remain untested.
+
+## Read-only transfer capabilities
+
+- This daemon rejects `adb exec-out` with `error: closed`.
+- `adb shell -T` fails because only a PTY is supported. Do not stream raw disk images
+  through a regular shell; terminal processing may corrupt binary bytes.
+- BusyBox exists at `/system/bin/busybox`, including `dd`, `gzip`, `sha256sum`,
+  `md5sum`, `hexdump`, `od`, and `tar`. It is not at `/system/xbin/busybox`.
+- `adb pull` transferred the 5,360-byte `/system/bin/reboot` executable to temporary
+  host storage; host and device SHA-256 matched. The host copy was then removed.
+  This verifies a small regular-file transfer, not a complete block-device backup.
+- A synthetic four-byte payload containing NUL, LF, CR, and a high byte survived
+  BusyBox hexadecimal encoding, PTY transfer, and host decoding exactly. Encoded
+  shell transfer is a fallback candidate, not yet a tested full-disk capture path.
+- Recovery executable `/system/bin/recovery` is present. Recovery entry, behavior,
+  and restore have not been tested; no recovery reboot was performed.
+
 ## Current verification status
 
 - Device identity: verified
 - Root network ADB: verified
 - Persistence after software reboot: verified
-- Persistence after power loss: pending explicit physical confirmation
-- Complete partition inventory: pending
+- Persistence after power loss: verified on this unit
+- Static storage and hardware inventory: complete on this unit
+- Physical navigation, recovery entry, and browser rendering: deferred until after backup
 - Verified private backup: pending
 - Dashboard browser selection: pending
 - Automatic dashboard startup: pending
