@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Frame Controls</string>
+    <string name="service_description">Floating Back and Home buttons. Does not retrieve window content, subscribe to app events, or use the network. Enable this service manually only after reviewing the app. Stop controls in Frame Controls, then turn the service off in Android Accessibility settings to remove access.</string>
+</resources>

@@ -31,7 +31,9 @@ the browser/launcher setup usable or replacing the default Home experience.
 Recommendation: build an original, small helper with floating **Back** and **Home**
 controls. This reuses the upstream recovery concept, not its newer-Android binary.
 
-Proposed implementation constraints, not completed features:
+The source implementation and host build are now available in
+[`android/navigation/`](../android/navigation/README.md). The constraints below are
+implemented/inspected on the host, not yet proven through physical frame tests:
 
 - Minimum API 19; compile-time and runtime checks against that minimum.
 - Legacy overlay window support, not API 26 `TYPE_APPLICATION_OVERLAY` or notification
@@ -49,10 +51,11 @@ The upstream `scripts/home-button/` service uses notification channels and moder
 application overlays. Its build targets API 26+ and verifies for API 27. The upstream
 Home HQ kiosk requires API 23. Neither is a direct API 19 install candidate.
 
-Build prerequisites would be a JDK and pinned official Android SDK/build tools. A
-locally generated signing key must remain private. Verify the resulting APK supports
-API 19 and v1 signing before proposing installation; record its hash from the actual
-build rather than inventing one in advance.
+The host build compiled against the actual API 19 platform and passed v1 signature,
+SDK, permission, and packaged-accessibility inspection. The exact APK/hash and
+private-key handling are documented in its README. Runtime navigation, overlay
+permission, service binding, and reboot persistence remain untested. Nothing has
+been installed or enabled on the frame.
 
 ## Candidate 2: KISS Launcher 3.24.2
 
@@ -163,8 +166,9 @@ Modern10 instructions without checking this older Fennec APK.
 
 ## Current decision gate
 
-Research identifies plausible API-compatible choices and a navigation design.
-It does **not** establish that these components run correctly or satisfy the final
-security goal. The next proposal is the host-only navigation-helper build, not
-installation of all three components at once. No interim app, accessibility service,
-OS image, or system configuration has been installed or enabled during this research.
+Research identifies plausible launcher/browser choices, and the API 19 helper has
+been built and inspected on the host. This does **not** establish frame runtime
+behavior or satisfy the final security goal. The next proposal is an exact helper
+installation approval, followed separately by manual accessibility enablement and
+physical tests—not installation of all components at once. No interim app,
+accessibility service, OS image, or system configuration has been installed or enabled.

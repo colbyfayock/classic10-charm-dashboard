@@ -1,5 +1,9 @@
-# Android kiosk
+# Android components
 
-An Android 4.4 / API 19 kiosk may be implemented here if a browser-first setup cannot provide reliable full-screen operation and recovery controls.
+[Frame Controls](navigation/README.md) is the host-built API 19 Back/Home helper.
+It has not yet been installed or physically tested on the frame. Its build, privilege
+boundaries, artifact fingerprints, and installation gate are documented there.
 
-The kiosk must preserve a tested route to Android Settings and VPhoto. It must not become the default Home application until manual launch, failure handling, and undo behavior are verified.
+An optional kiosk may be investigated later if a browser-first setup is insufficient.
+Any component must preserve a tested route to Android Settings and VPhoto. No
+default-Home change is permitted until recovery and undo are proven and approved.

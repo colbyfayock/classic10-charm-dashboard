@@ -1,0 +1,25 @@
+{
+  "provenance": "Owner-approved legacy SDK bootstrap: official Google size/SHA-1 verified before recording SHA-256. Repeat builds require all pins; no mismatch may be bypassed.",
+  "archives": [
+    {
+      "name": "platform-19",
+      "url": "https://dl.google.com/android/repository/android-19_r04.zip",
+      "file": "android-19_r04.zip",
+      "size": 63871092,
+      "sha1": "2ff20d89e68f2f5390981342e009db5a2d456aaa",
+      "sha256": "5efc3a3a682c1d49128daddb6716c433edf16e63349f32959b6207524ac04039",
+      "archive_root": "android-4.4.2",
+      "destination": "platforms/android-19"
+    },
+    {
+      "name": "build-tools-34-macos",
+      "url": "https://dl.google.com/android/repository/build-tools_r34-macosx.zip",
+      "file": "build-tools_r34-macosx.zip",
+      "size": 76559180,
+      "sha1": "00e1301387028f33753e38274401694e1a27c62f",
+      "sha256": "76bf668fe037b1a69197e298ddae5633d4d7f0f41af7ed17e537c80c1ed8a6f3",
+      "archive_root": "android-14",
+      "destination": "build-tools/34.0.0"
+    }
+  ]
+}
