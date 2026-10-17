@@ -27,11 +27,40 @@ reach its displayed address.
 - A later session again reported `Host is down` and unresolved neighbor lookup,
   despite owner confirmation of the displayed address and regular Wi-Fi network.
   The Mac could reach a local gateway TCP service. That recurring failure remains
-  **unresolved**; it is not proven to be an ADB, permission, sleep, driver, or router bug.
+  a useful example of why screen/router records need checking against the active
+  interface: the owner subsequently found two candidate addresses in Eero, and the
+  alternate restored access. See the confirmed result below; the exact reason for
+  duplicate Eero records remains unproven.
 - Successful root ADB sessions persisted after tested software and physical reboots,
   but this does not guarantee that networking will be reachable after every reboot.
 - The frame uses the ESP8089 Wi-Fi driver. No hardware-specific reconnect fix has
   been validated on this Android 4.4.2 firmware.
+
+### Eero duplicate-address investigation
+
+The owner found two candidate IPv4 addresses in Eero. A bounded check reached ADB
+at the alternate address. Exact model, firmware, capacities, partition layout, and
+the private physical-device fingerprint all matched the verified backup.
+
+Read-only `netcfg` and BusyBox `ip -4 addr show` then confirmed exactly one
+non-loopback IPv4 address on the frame: the reachable candidate. The older,
+unreachable address was not assigned to an interface in that observation.
+
+This confirms that targeting an address no longer assigned to the frame explained
+the latest management failure. It does not establish why Eero retained two entries
+or why a previously viewed frame screen appeared to show the old value. Stale lease
+history or duplicate client identities are possibilities, not proven causes.
+
+The observed Wi-Fi MAC was not locally administered, but one observation does not
+prove stability across boots. A private baseline is available for a future
+comparison. Never copy that MAC, either address, or the physical fingerprint into
+public notes.
+
+Before adding an Eero DHCP reservation, identify the active entry by comparing its
+MAC locally with the frame's current Wi-Fi interface. Different MACs may indicate
+distinct client identities; the same MAC with multiple addresses may indicate
+lease history. Neither should be assumed without checking. A reservation is a
+separate router change requiring approval; it is not applied by these tools.
 
 ## Read-only management sequence
 
