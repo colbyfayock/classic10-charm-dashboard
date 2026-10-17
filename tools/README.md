@@ -15,6 +15,47 @@ The relay accepts a new ADB client after a disconnect or frame reboot. Stop it w
 
 ## Read-only backup capture
 
+### Resumable chunked capture (recommended)
+
+```sh
+python3 tools/chunked_backup.py --session chunked-v1
+```
+
+Rerun exactly the same command to resume. It rechecks device identity, partition
+layout, and all completed gzip files before skipping verified chunks. The private
+checkpoint also binds the session to the physical eMMC, not just a model name or
+network address. Do not publish that checkpoint.
+
+The default plan contains 235 eMMC chunks of at most 64 MiB plus two 4 MiB hardware
+boot areas. Each completed chunk passes exact-size, gzip, SHA-256, and filler checks
+before an atomic checkpoint is saved. No raw device write commands are used.
+
+To stop, press `Ctrl-C` in its terminal or send SIGINT/SIGTERM to the capture's
+Python process. Completed checkpoints remain usable. The unfinished attempt is
+preserved separately and retried on the next run. Corrupt completed files, changed
+identity/layout, or a changed chunk plan stop the run rather than silently bypassing
+verification. A capture lock prevents simultaneous chunked runs.
+
+For a bounded initial test or a planned pause between chunks:
+
+```sh
+python3 tools/chunked_backup.py --session chunked-v1 --max-new-chunks 1
+```
+
+When all chunks are present, the tool automatically re-reads every chunk, verifies
+full coverage, compares both hardware boot areas with fresh device hashes, and
+compares seven stable eMMC ranges with independent device reads. Only then does
+the private checkpoint report `verified_live_capture`. Local chunk completion alone
+is not that final verification. A 180-second idle-output timeout prevents a silent
+ADB stream from blocking forever.
+
+Chunking does not guarantee greater speed. A resumed live capture can span multiple
+device boots and changing filesystems; it is **not an atomic offline snapshot** and
+restore remains untested. Do not install/change software or alter firmware while
+capturing. Keep the frame powered, Wi-Fi connected, and the Mac awake.
+
+### Original single-stream capture
+
 `backup_frame.py` is restricted to the model, firmware, capacities, and boot offset
 documented in [the device record](../docs/device.md). It contains no device write
 commands and creates private output only under ignored, owner-only `backups/`.

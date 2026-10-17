@@ -154,9 +154,17 @@ encoding captured one boot area in approximately 0.88 seconds and matched the sy
 capture and independent device hashes. These small, highly compressible captures
 do not predict an exact completion time for the whole disk.
 
-The full eMMC capture is in progress. Its independent partition checks have not
-passed yet. See [host backup tools](../tools/README.md) for the capture and verification
-commands. No images or capture hashes are included in this repository.
+The full eMMC capture was stopped at the owner's request before completion. The
+retained `.partial` file is not a verified backup, and the current tool cannot
+resume it. Independent whole-image partition comparisons have not passed. See
+[host backup tools](../tools/README.md) for capture and verification commands.
+No images or capture hashes are included in this repository.
+
+A resumable replacement now captures independently verified 64 MiB eMMC chunks
+with private atomic checkpoints. Its host-side interruption/resume tests pass;
+initial hardware checkpoint testing is pending device connectivity. The prior
+interrupted single-stream capture and verified hardware boot-area copies remain
+untouched. See the host tools guide for start/resume commands and snapshot limits.
 
 ## Current verification status
 
@@ -167,6 +175,6 @@ commands. No images or capture hashes are included in this repository.
 - Static storage and hardware inventory: complete on this unit
 - Physical navigation, recovery entry, and browser rendering: deferred until after backup
 - Hardware boot-area backups: captured and verified
-- Full eMMC backup and independent partition comparisons: in progress
+- Full eMMC backup and independent partition comparisons: incomplete; stopped by owner
 - Dashboard browser selection: pending
 - Automatic dashboard startup: pending

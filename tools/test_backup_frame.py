@@ -1,12 +1,13 @@
 import gzip
 import hashlib
 import io
+import os
 from pathlib import Path
 import struct
 import tempfile
 import unittest
 
-from backup_frame import receive_encoded, receive_stream, verify_gzip
+from backup_frame import encoded_lines, encoded_pipeline, receive_encoded, receive_stream, verify_gzip
 
 
 class FragmentedStream:
@@ -22,6 +23,36 @@ def packet(kind, data=b""):
 
 
 class BackupFrameTest(unittest.TestCase):
+    def test_encoded_pipe_reads_lines_and_last_fragment(self):
+        read_fd, write_fd = os.pipe()
+        os.write(write_fd, b"first\r\nlast")
+        os.close(write_fd)
+        with os.fdopen(read_fd, "rb") as pipe:
+            self.assertEqual(list(encoded_lines(pipe)), [b"first\r", b"last"])
+
+    def test_encoded_pipe_times_out_instead_of_hanging(self):
+        read_fd, write_fd = os.pipe()
+        try:
+            with os.fdopen(read_fd, "rb") as pipe:
+                with self.assertRaises(TimeoutError):
+                    list(encoded_lines(pipe, idle_timeout=0.01))
+        finally:
+            os.close(write_fd)
+
+    def test_range_pipeline_bounds_offsets_and_uses_read_only_commands(self):
+        pipeline = encoded_pipeline("/dev/block/mmcblk0", 67108864, 67108864)
+        self.assertIn("skip=1024 count=1024", pipeline)
+        self.assertIn("set -o pipefail", pipeline)
+        self.assertNotIn("of=", pipeline)
+        for source, size, offset in (
+            ("/dev/block/unknown", 65536, 0),
+            ("/dev/block/mmcblk0", 65536, -65536),
+            ("/dev/block/mmcblk0", 1, 0),
+            ("/dev/block/mmcblk0boot0", 4194304, 65536),
+        ):
+            with self.assertRaises(ValueError):
+                encoded_pipeline(source, size, offset)
+
     def encoded_lines(self, data):
         compressed = gzip.compress(data)
         return [compressed[i:i + 1024].hex().encode() + b"\r\n" for i in range(0, len(compressed), 1024)]

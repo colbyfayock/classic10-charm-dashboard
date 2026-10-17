@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import re
+import selectors
 import shlex
 import shutil
 import socket
@@ -166,18 +167,48 @@ def service(stream, name):
         raise ValueError("ADB server rejected service selection")
 
 
-def capture(transport, path, expected_size, destination, method="sync"):
+def encoded_pipeline(path, expected_size, offset=0):
+    sizes = {source: size for source, size in AREAS.values()}
+    if (path not in sizes or offset < 0 or expected_size <= 0
+            or offset % 65536 or expected_size % 65536
+            or offset + expected_size > sizes[path]):
+        raise ValueError("Read range must be aligned and within a known device")
+    return (
+        "set -o pipefail || exit 97; "
+        f"/system/bin/busybox dd if={shlex.quote(path)} bs=65536 skip={offset // 65536} count={expected_size // 65536} 2>/dev/null | "
+        "/system/bin/busybox gzip -1c | "
+        "/system/bin/busybox hexdump -v -e '1024/1 \"%02x\" \"\\n\"'; "
+        "result=$?; echo; echo CAPTURE_STATUS:$result"
+    )
+
+
+def encoded_lines(pipe, idle_timeout=180):
+    """Bound both idle time and line length without buffered-pipe deadlocks."""
+    pending = b""
+    with selectors.DefaultSelector() as selector:
+        selector.register(pipe, selectors.EVENT_READ)
+        while True:
+            if not selector.select(idle_timeout):
+                raise TimeoutError("Capture stream idle timeout")
+            block = os.read(pipe.fileno(), 65536)
+            if not block:
+                if pending:
+                    yield pending
+                return
+            pending += block
+            while b"\n" in pending:
+                line, pending = pending.split(b"\n", 1)
+                if len(line) > 4096:
+                    raise ValueError("Capture output line too long")
+                yield line
+            if len(pending) > 4096:
+                raise ValueError("Capture output line too long")
+
+
+def capture(transport, path, expected_size, destination, method="sync", offset=0):
     partial = destination.with_name(destination.name + ".partial")
     if method == "encoded":
-        if expected_size % 65536:
-            raise ValueError("Encoded source size must be a whole number of blocks")
-        pipeline = (
-            "set -o pipefail || exit 97; "
-            f"/system/bin/busybox dd if={shlex.quote(path)} bs=65536 count={expected_size // 65536} 2>/dev/null | "
-            "/system/bin/busybox gzip -1c | "
-            "/system/bin/busybox hexdump -v -e '1024/1 \"%02x\" \"\\n\"'; "
-            "result=$?; echo; echo CAPTURE_STATUS:$result"
-        )
+        pipeline = encoded_pipeline(path, expected_size, offset)
         command = "/system/bin/busybox sh -c " + shlex.quote(pipeline)
         process = subprocess.Popen(
             ["adb", "-s", transport, "shell", command],
@@ -185,7 +216,7 @@ def capture(transport, path, expected_size, destination, method="sync"):
         )
         try:
             with partial.open("xb") as output:
-                lines = iter(lambda: process.stdout.readline(4096), b"")
+                lines = encoded_lines(process.stdout)
                 digest = receive_encoded(lines, output, expected_size)
                 output.flush()
                 os.fsync(output.fileno())
@@ -205,6 +236,8 @@ def capture(transport, path, expected_size, destination, method="sync"):
             raise ValueError("Refusing to replace an existing capture")
         partial.rename(destination)
         return digest
+    if offset:
+        raise ValueError("Sync transfer does not support a partial device range")
     with socket.create_connection(("127.0.0.1", 5037), timeout=30) as stream:
         stream.settimeout(120)
         service(stream, "host:transport:" + transport)
