@@ -1,7 +1,10 @@
 # Proposed reversible interim browser setup
 
-Research date: 2026-10-17. **Frame Controls is installed, owner-enabled, and physically
-tested. KISS is installed with physical testing pending. Firefox is not installed.**
+Research date: 2026-10-17; runtime update: 2026-10-20. **Frame Controls is physically
+tested, the owner selected KISS as Home, and Firefox 68.11.0 is installed/byte-verified.**
+VPhoto is temporarily disabled in an approved diagnosis trial because Settings
+explicitly relaunched it. Its APK/data remain intact. This supersedes the earlier
+initial-install state recorded below; reboot persistence remains untested.
 The owner approved a reversible interim setup while waiting for a mini-USB cable.
 Change/test scopes may be batched with explicit permissions, rollback, and time
 estimates; unexpected material permission changes still require review.
@@ -132,13 +135,20 @@ libraries, and verifies v1 signing for API 19. Inspected signing-certificate SHA
 Its `.App` launcher alias targets `org.mozilla.gecko.LauncherActivity`; this was read
 from the artifact, not assumed from the newer guide.
 
-**Installation is held for a material permission decision.** The actual manifest
+**The owner subsequently approved installation after disclosure.** The actual manifest
 also requests account/authentication/sync access, system-settings writes, Wi-Fi
 changes, location, external storage, overlay, camera, and microphone capabilities.
 Some permissions are normal/signature-only/unknown on this old OS, but KitKat lacks
 normal modern runtime denial for its dangerous permissions. These broad legacy
-capabilities were not fully disclosed in the initial batch approval. Do not silently
-install it while the owner is away or describe the official artifact as malware.
+capabilities were not fully disclosed in the initial batch approval, so installation
+was held until the owner requested proceeding with the recommended browser.
+Installed bytes match the pinned artifact; exact staging was removed and unrelated
+Home/accessibility/enabled states were unchanged. Public Home HQ navigation renders
+over HTTPS, but its main dashboard pane is blank; full app compatibility is not proven.
+The dependency-free [local mock sample](../dashboard/README.md) renders correctly
+and entered/exited 1280×800 DOM fullscreen using injected page-button taps. The
+independent Frame Controls overlay remained visible; physical touch and unattended
+startup/reboot persistence are separate untested behaviors.
 
 ## Approval and test sequence
 
@@ -168,7 +178,10 @@ install it while the owner is away or describe the official artifact as malware.
   adb -s 127.0.0.1:15555 shell am start -n com.waophoto.smartframe/.ui.SplashActivity
   ```
 
-- Keep VPhoto installed and enabled throughout testing.
+- VPhoto remains installed but currently disabled in a separately approved trial.
+  Its functional rollback is `pm enable com.waophoto.smartframe`, followed by the
+  explicit launch above; obtain approval before changing its current trial state.
+  This restores enabled behavior, not byte-identical default-mode package metadata.
 - Disable the new accessibility service before uninstalling its helper. Do not
   assume the helper's future package/component name before it is built.
 - With specific approval, uninstall newly added Firefox (`org.mozilla.firefox`) or
@@ -182,8 +195,9 @@ install it while the owner is away or describe the official artifact as malware.
 
 ## Current decision gate
 
-The helper's initial physical navigation gate passed. KISS is installed and ready
-for owner-present UI/Just-once chooser tests; it is not yet a proven stable launcher
-on this vendor firmware. Firefox's artifact checks passed but installation is held
-for the broader permission decision. No sensitive login, permanent Home, vendor
-disablement, system edit, or replacement-OS change is approved by these trial steps.
+The helper's physical navigation gate passed, KISS was owner-selected as Home, and
+Firefox is installed. The owner approved harmless sample-dashboard/fullscreen tests.
+No sensitive login, additional vendor disablement, system edit, startup configuration,
+or replacement-OS change is included. Current VPhoto-disabled/KISS behavior has not
+been reboot-tested. Older initial-trial observations above are historical, not the
+current device state.

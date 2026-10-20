@@ -41,6 +41,8 @@ Before committing, inspect every changed file and image for private information.
 ## Device debugging and screenshots
 
 - Follow `docs/device-debugging.md` for the established connection/UI workflow.
+- Use `tools/frame_screen.py capture`, inspect the fixed ignored in-repo image,
+  then `tools/frame_screen.py cleanup`; avoid per-shot external temporary paths.
 - Use foreground-package checks and a private screenshot before asking the owner
   to identify a screen or guessing which app is visible.
 - Screenshots are ephemeral: capture, inspect, then delete the exact image and any

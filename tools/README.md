@@ -30,6 +30,12 @@ The relay accepts a new ADB client after a disconnect or frame reboot. Stop it w
 
 ## Read-only backup capture
 
+For private UI inspection, use `/usr/bin/python3 tools/frame_screen.py capture`,
+read `backups/screenshots/current.png`, then immediately run
+`/usr/bin/python3 tools/frame_screen.py cleanup`. The helper never writes to the
+frame and removes only its hash-matching image/marker. See the
+[debugging workflow](../docs/device-debugging.md) for permissions and safeguards.
+
 ### Resumable chunked capture (recommended)
 
 ```sh

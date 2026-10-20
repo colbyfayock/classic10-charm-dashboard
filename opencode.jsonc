@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permissions": [
+    { "action": "shell", "resource": "/usr/bin/python3 tools/frame_screen.py capture", "effect": "allow" },
+    { "action": "shell", "resource": "/usr/bin/python3 tools/frame_screen.py cleanup", "effect": "allow" },
+    { "action": "read", "resource": "backups/screenshots/current.png", "effect": "allow" },
+    { "action": "edit", "resource": "tools/frame_screen.py", "effect": "ask" },
+    { "action": "edit", "resource": "tools/backup_frame.py", "effect": "ask" },
+    { "action": "edit", "resource": "opencode.jsonc", "effect": "ask" }
+  ]
+}

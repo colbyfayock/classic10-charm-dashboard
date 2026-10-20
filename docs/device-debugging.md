@@ -39,9 +39,9 @@ is unnecessary while these instructions are specific to this frame and repositor
 
 ## Screenshot lifetime: capture → inspect → delete
 
-1. Prefer a unique owner-only temporary directory under the harness-approved temp
-   root. An ignored owner-only `backups/screenshots/` file is an acceptable fallback.
-   Never place captures in tracked source or the vault's attachments folder by default.
+1. Prefer the fixed ignored, owner-only in-repository path below. It avoids repeated
+   external-directory permission prompts. Use a private harness temp directory only
+   when the helper is unavailable. Never use tracked source or vault attachments.
 2. Capture only the non-sensitive UI needed for the current test. Avoid credential,
    account, personal-photo, or other sensitive screens unless explicitly necessary
    and approved. Never log secrets or typed credentials.
@@ -57,6 +57,29 @@ is unnecessary while these instructions are specific to this frame and repositor
 
 The log should preserve conclusions such as "KISS welcome screen confirmed by PNG
 and foreground activity; image deleted," not an accumulating screenshot gallery.
+
+### Reusable capture and cleanup
+
+Run these exact commands from the repository root:
+
+```sh
+/usr/bin/python3 tools/frame_screen.py capture
+# Inspect backups/screenshots/current.png with the image-reading tool.
+/usr/bin/python3 tools/frame_screen.py cleanup
+```
+
+The helper uses the existing loopback ADB transport, checks the documented device
+identity/storage and API, validates PNG chunk CRCs, and creates no file on the frame.
+It checks Git ignores both outputs, refuses to overwrite a pending capture, and
+deletes only its hash-matching `current.png` and ownership marker `current.json`.
+The marker is minimal cleanup provenance, not a retained screenshot archive.
+
+`opencode.jsonc` allows only these two exact shell commands and reading the fixed
+image. It asks before tool edits to the helper, its identity-check dependency, or
+the permission file. This is not a shell sandbox: host/global/agent policies still
+apply, and more restrictive rules may still prompt. No blanket ADB, external-path,
+install, settings, or global permission allowance is added. Config reload behavior
+may require reopening the project; do not restart an active device transaction.
 
 ## Test and communicate efficiently
 

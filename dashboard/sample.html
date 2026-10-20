@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daylight — sample dashboard</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body { background: #f1eee6; color: #202c2a; font-family: Georgia, "Times New Roman", serif; }
+    .page { width: 100%; max-width: 1280px; min-height: 800px; margin: 0 auto; padding: 30px 42px 36px; }
+    .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
+    .brand { color: #46665d; font: bold 15px Arial, sans-serif; letter-spacing: 3px; text-transform: uppercase; }
+    .fullscreen { min-height: 56px; padding: 13px 20px; border: 0; border-radius: 4px; background: #bd5e3d; color: #fff; font: bold 18px Arial, sans-serif; cursor: pointer; }
+    .fullscreen:focus, .task input:focus { outline: 3px solid #202c2a; outline-offset: 3px; }
+    .hero { display: flex; align-items: flex-end; justify-content: space-between; padding: 12px 0 28px; border-bottom: 1px solid #c9c5b9; }
+    .eyebrow { margin: 0 0 10px; color: #657a70; font: bold 13px Arial, sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+    h1 { margin: 0; font-size: 68px; font-weight: normal; letter-spacing: -3px; line-height: 1; }
+    .date { margin: 12px 0 0; color: #657a70; font: 18px Arial, sans-serif; }
+    .weather { min-width: 245px; padding: 20px 24px; border-left: 3px solid #d69b57; }
+    .weather strong { display: block; font-size: 44px; font-weight: normal; }
+    .weather span { display: block; margin-top: 4px; font: 15px Arial, sans-serif; }
+    .mock { color: #8c563d !important; font-size: 11px !important; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; }
+    .columns { display: flex; gap: 38px; padding-top: 30px; }
+    .panel { flex: 1; min-width: 0; }
+    h2 { margin: 0 0 18px; color: #46665d; font-size: 25px; font-weight: normal; }
+    .event { display: flex; padding: 14px 0; border-top: 1px solid #d7d3c8; }
+    .time { width: 92px; flex: 0 0 92px; color: #bd5e3d; font: bold 14px Arial, sans-serif; }
+    .event strong { display: block; font-size: 18px; font-weight: normal; }
+    .event span:last-child { display: block; margin-top: 4px; color: #68736c; font: 14px Arial, sans-serif; }
+    .task { display: flex; align-items: center; gap: 13px; min-height: 55px; border-top: 1px solid #d7d3c8; font: 16px Arial, sans-serif; }
+    .task input { width: 22px; height: 22px; accent-color: #46665d; }
+    .task input:checked + span { color: #78827a; text-decoration: line-through; }
+    .note { margin: 18px 0 0; color: #68736c; font: 13px/1.5 Arial, sans-serif; }
+    .status { margin-top: 24px; padding: 13px 16px; border-radius: 3px; background: #e4e1d7; color: #374c45; font: 14px Arial, sans-serif; }
+    .status.error { background: #f3ded5; color: #762f20; }
+    .ready { margin-top: 14px; color: #657a70; font: 12px Arial, sans-serif; }
+    @media (max-width: 700px) {
+      .page { min-height: 100%; padding: 20px; }
+      .hero { align-items: flex-start; flex-direction: column; gap: 24px; }
+      h1 { font-size: 52px; }
+      .weather { padding: 12px 16px; }
+      .columns { flex-direction: column; gap: 30px; }
+      .top { margin-bottom: 20px; }
+      .fullscreen { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div class="brand">Daylight / home board</div>
+      <button class="fullscreen" id="fullscreenButton" type="button">Enter fullscreen</button>
+    </header>
+    <section class="hero" aria-labelledby="greeting">
+      <div>
+        <p class="eyebrow">A little room to breathe</p>
+        <h1 id="greeting">Good day.</h1>
+        <p class="date" id="dateText">Today</p>
+      </div>
+      <aside class="weather" aria-label="Sample weather">
+        <span class="mock">Sample weather</span>
+        <strong>18°</strong>
+        <span>Bright skies · gentle breeze</span>
+      </aside>
+    </section>
+    <div class="columns">
+      <section class="panel" aria-labelledby="scheduleTitle">
+        <h2 id="scheduleTitle">The day ahead</h2>
+        <div class="event"><span class="time">9:30 AM</span><div><strong>Market stroll</strong><span>Pick up fruit and flowers</span></div></div>
+        <div class="event"><span class="time">12:15 PM</span><div><strong>Lunch break</strong><span>Something good, somewhere sunny</span></div></div>
+        <div class="event"><span class="time">3:00 PM</span><div><strong>Garden hour</strong><span>Water the pots</span></div></div>
+        <p class="note">A sample schedule for this demonstration. Nothing is synced or saved.</p>
+      </section>
+      <section class="panel" aria-labelledby="listTitle">
+        <h2 id="listTitle">A few small things</h2>
+        <label class="task"><input type="checkbox"><span>Open the windows</span></label>
+        <label class="task"><input type="checkbox"><span>Water the basil</span></label>
+        <label class="task"><input type="checkbox"><span>Put the kettle on</span></label>
+        <p class="note">These checkboxes are only a local visual demo; changes disappear when the page closes.</p>
+      </section>
+    </div>
+    <div class="status" id="fullscreenStatus" role="status" aria-live="polite">Fullscreen status: not active. Use the button to try this browser's fullscreen support.</div>
+    <div class="ready" id="readyStatus">JavaScript status: starting…</div>
+  </main>
+  <script>
+    (function () {
+      var button = document.getElementById('fullscreenButton');
+      var status = document.getElementById('fullscreenStatus');
+      var ready = document.getElementById('readyStatus');
+      var dateText = document.getElementById('dateText');
+
+      function isFullscreen() {
+        return !!(document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+      }
+
+      function updateFullscreenStatus(message, failed) {
+        var active = isFullscreen();
+        button.innerHTML = active ? 'Exit fullscreen' : 'Enter fullscreen';
+        status.className = failed ? 'status error' : 'status';
+        status.innerHTML = 'Fullscreen status: ' + (active ? 'active.' : 'not active.') + (message ? ' ' + message : '');
+      }
+
+      function fullscreenChanged() {
+        updateFullscreenStatus('Browser fullscreen state changed.');
+      }
+
+      function requestFullscreen() {
+        var element = document.documentElement;
+        var method = element.requestFullscreen || element.mozRequestFullScreen;
+        var result;
+        if (isFullscreen()) {
+          method = document.exitFullscreen || document.mozCancelFullScreen;
+          if (!method) {
+            updateFullscreenStatus('Exit is not supported by this browser.', true);
+            return;
+          }
+          try {
+            result = method.call(document);
+          } catch (error) {
+            updateFullscreenStatus('Exit failed: ' + error.message, true);
+            return;
+          }
+        } else {
+          if (!method) {
+            updateFullscreenStatus('Fullscreen is not supported by this browser.', true);
+            return;
+          }
+          try {
+            result = method.call(element);
+          } catch (error) {
+            updateFullscreenStatus('Request failed: ' + error.message, true);
+            return;
+          }
+        }
+        if (result && typeof result.then === 'function') {
+          result.then(function () {
+            updateFullscreenStatus('Request completed; state is confirmed by the browser event.');
+          }, function (error) {
+            updateFullscreenStatus('Request rejected: ' + (error && error.message ? error.message : 'permission denied.'), true);
+          });
+        } else {
+          updateFullscreenStatus('Request sent; waiting for browser state change.');
+        }
+      }
+
+      button.addEventListener('click', requestFullscreen, false);
+      document.addEventListener('fullscreenchange', fullscreenChanged, false);
+      document.addEventListener('mozfullscreenchange', fullscreenChanged, false);
+      document.addEventListener('webkitfullscreenchange', fullscreenChanged, false);
+      document.addEventListener('MSFullscreenChange', fullscreenChanged, false);
+      window.onerror = function (message, source, line) {
+        ready.className = 'ready';
+        ready.innerHTML = 'JavaScript diagnostic: ' + message + ' (line ' + line + ').';
+        return false;
+      };
+
+      function updateClock() {
+        var now = new Date();
+        var hours = now.getHours();
+        var minutes = now.getMinutes();
+        var suffix = hours >= 12 ? 'PM' : 'AM';
+        var displayHours = hours % 12 || 12;
+        var displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+        var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        document.getElementById('greeting').innerHTML = displayHours + ':' + displayMinutes + ' ' + suffix;
+        dateText.innerHTML = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate();
+      }
+      updateClock();
+      window.setInterval(updateClock, 1000);
+      ready.innerHTML = 'JavaScript status: ready. This page uses sample content only; it makes no network requests and stores no data.';
+    }());
+  </script>
+</body>
+</html>
