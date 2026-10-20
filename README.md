@@ -70,8 +70,9 @@ It distinguishes host ADB permission failures, offline protocol sessions, and ba
 LAN reachability problems; they require different investigations.
 
 For credential-free LAN lookup, see [local device discovery](docs/device-discovery.md).
-Nmap is installed on the development Mac; no Eero client login or recurring scanner
-has been configured. Live inventory and identifiers remain private.
+Nmap and a reusable MAC-profile finder are available on the development Mac:
+`python3 tools/find_device.py photo-frame`. No Eero client login or recurring scanner
+is configured. Live inventory, identifiers, and network approval remain private.
 
 ## Privacy
 

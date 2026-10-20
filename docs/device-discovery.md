@@ -8,13 +8,87 @@ verification code, token, or router API session is required for this approach.
 
 - Nmap 7.992, installed from official Homebrew core with bottle checksum checks.
 - Built-in `arp` and `dns-sd` tools.
-- No `arp-scan`, Fing, Eero CLI, or custom automated device-finder implementation.
+- Reusable `tools/find_device.py` with private device aliases and approved network binding.
+- No `arp-scan`, Fing, or Eero CLI.
 
 The Homebrew installation included its dependencies and upgrades, including
 OpenSSL 4 and Python 3.15. It was not a standalone-binary-only host change. No
 frame package, router setting, or Wi-Fi credential was changed.
 
 ## MAC-first workflow
+
+### Reusable command
+
+From the repository root, as the normal Mac user:
+
+```sh
+python3 tools/find_device.py photo-frame --check
+python3 tools/find_device.py photo-frame
+python3 tools/find_device.py photo-frame --json
+```
+
+`--check` validates the private profile, current network, and pinned scanner without
+scanning or asking for administrator approval. A normal invocation performs one
+fresh, bounded ARP-only lookup. On a unique match it prints only the current IP;
+`--json` adds status, observation time, private receipt path, and explicit false
+service/physical-identity verification fields. Output contains private addresses;
+do not send it to public CI logs or commit it.
+
+Exit codes: `0` unique match/preflight ready, `2` no matching ARP responder,
+`3` multiple addresses matched (none selected automatically), `1` configuration,
+scope, scan, or permission failure, and `130` caller interruption.
+
+Do not run the Python program with sudo. It asks macOS to elevate only a fixed
+network/binary recheck and the pinned Nmap ARP scan. It never receives a password.
+The interface address/mask, gateway, cached gateway MAC, and executable digest are
+rechecked after that prompt before scan execution. If the caller is interrupted,
+an already elevated bounded scan may finish independently; no recurring job or
+subsequent scan is scheduled.
+
+### Private profile and approval boundary
+
+Profiles live at `backups/device-profiles/<alias>.json` with mode 0600, under owner-only
+0700 directories. The existing `photo-frame` profile was provisioned under the
+owner's explicit network/finder approval. No real profile is shipped in Git.
+
+Its `mac` field identifies the NIC to locate. Its `discovery` object records:
+
+- `approved: true`, approved interface, exact private IPv4 subnet, gateway address,
+  and gateway MAC from the owner-approved inventory.
+- Canonical `nmap_path` and `nmap_sha256` from the reviewed Homebrew installation.
+
+The command never learns/approves an arbitrary current network automatically. It
+refuses a different subnet, interface, gateway identity, scanner, public/oversized
+scope, symlink, or insufficiently private profile. Scope is capped at 1,024 addresses.
+Network-MAC binding is a useful accidental-scan guard, not authentication against
+a hostile network that spoofs those values. Review/update private approval only
+when the owner authorizes a changed network or tool version.
+
+To add another device, create a new owner-approved private alias profile with its
+MAC and the appropriate approved discovery binding. Do not put MACs in command
+arguments, public examples, or source. No cloud/router credentials are part of a profile.
+
+Each invocation saves raw XML, private inventory, result, and scope receipt under
+`backups/network-discovery/finder-.../`. A successful empty result clears current
+candidate addresses rather than returning a stale IP. Failed/cancelled scans do not
+report a match; previous records are historical, not proof of current reachability.
+Profile checkpoints are replaced atomically and reject a concurrent edit. A lock
+prevents overlapping finder invocations while the caller is running.
+
+### Validation evidence
+
+Host tests cover MAC formats, changed scope, tool pin/symlink rejection, malformed
+or unsuccessful/out-of-scope/port-scan XML, deduplication, missing/multiple matches,
+private profile handling, no-scan preflight, and preservation of concurrent edits.
+
+The first real command preflight passed. Its live ARP scan completed with 26 neighbors
+but no frame match, so it returned `not_found`/exit 2; this was not promoted to a
+successful current-device match. Replaying the prior successful real ARP capture
+through the same parser found the correct single match among its 27 responders.
+This tests both outcomes without repeatedly probing a frame that did not respond.
+
+The command does not check ports, authenticate a device, connect ADB, start a relay,
+or change the frame. Those remain separate, explicitly approved verification steps.
 
 For finding a known device, start with local MAC/IP discovery, not a service-port
 filter:
@@ -75,11 +149,10 @@ Port 5555's service-database label is not proof that the endpoint speaks Android
    identity checks. Identifier comparison over unauthenticated ADB is not secure
    boot attestation and does not justify automatic writes.
 
-The one-time scans have completed; no recurring scan or background monitoring job
-was installed. A tested reusable finder command with explicit network scope and
-private configuration is potential next work, not an existing feature. For basic
-MAC-to-IP lookup this local approach has now worked, so Eero authentication is not
-needed merely to find the frame.
+The command and earlier one-time scans install no recurring scan or background
+monitoring job. The reusable finder is now available; its profile/approval and
+validation evidence are described above. For basic MAC-to-IP lookup this local
+approach has worked, so Eero authentication is not needed merely to find the frame.
 
 ## Eero integration as a later option
 

@@ -2,6 +2,21 @@
 
 Host-side utilities in this directory must be device-agnostic, avoid embedding private addresses or identifiers, and bind local network services to loopback by default.
 
+## Find a known device by MAC
+
+```sh
+python3 tools/find_device.py photo-frame --check
+python3 tools/find_device.py photo-frame
+python3 tools/find_device.py photo-frame --json
+```
+
+The finder uses an approved private MAC/network profile and one bounded ARP scan,
+with native Mac administrator approval when needed. It refuses scope/tool changes,
+keeps inventory private, and reports ambiguity instead of choosing arbitrarily.
+`--check` never scans. It does not connect ADB or alter a device. See the
+[discovery guide](../docs/device-discovery.md) for setup boundaries, exit codes,
+privacy, validation evidence, and the difference between lookup and authentication.
+
 ## ADB TCP relay
 
 `adb_tcp_relay.py` forwards a localhost port to a frame's ADB port. It exists for macOS environments where ordinary TCP clients can reach the frame but the ADB daemon reports `No route to host`.
