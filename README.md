@@ -52,7 +52,7 @@ See [AGENTS.md](AGENTS.md) for the rules that apply to automated tools and codin
 Some macOS configurations allow ordinary TCP clients to reach the frame while the ADB daemon reports `No route to host`. `tools/adb_tcp_relay.py` provides a localhost-only relay without exposing another network listener.
 
 ```sh
-python3 tools/adb_tcp_relay.py FRAME_ADDRESS
+/usr/bin/python3 tools/adb_tcp_relay.py FRAME_ADDRESS
 adb connect 127.0.0.1:15555
 adb -s 127.0.0.1:15555 shell id
 ```
@@ -68,6 +68,9 @@ Do not place a real frame address in source files, documentation, issues, or com
 For recurring connection failures, see [connection troubleshooting](docs/connection-troubleshooting.md).
 It distinguishes host ADB permission failures, offline protocol sessions, and basic
 LAN reachability problems; they require different investigations.
+
+For UI work, follow the [agent debugging workflow](docs/device-debugging.md): inspect
+the foreground package and screenshot, then remove temporary captures after viewing.
 
 For credential-free LAN lookup, see [local device discovery](docs/device-discovery.md).
 Nmap and a reusable MAC-profile finder are available on the development Mac:

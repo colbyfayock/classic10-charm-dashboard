@@ -22,7 +22,7 @@ privacy, validation evidence, and the difference between lookup and authenticati
 `adb_tcp_relay.py` forwards a localhost port to a frame's ADB port. It exists for macOS environments where ordinary TCP clients can reach the frame but the ADB daemon reports `No route to host`.
 
 ```sh
-python3 tools/adb_tcp_relay.py FRAME_ADDRESS
+/usr/bin/python3 tools/adb_tcp_relay.py FRAME_ADDRESS
 adb connect 127.0.0.1:15555
 ```
 

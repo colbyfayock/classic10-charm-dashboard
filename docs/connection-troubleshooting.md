@@ -16,6 +16,23 @@ Ping alone is not conclusive: a device may reject ICMP while still accepting TCP
 Likewise, a vendor screen saying Wi-Fi is connected does not prove that the Mac can
 reach its displayed address.
 
+### Interpreter-specific relay failure on the development Mac
+
+After installing Nmap and its Homebrew dependencies, the default Python became
+3.15. A direct TCP test from that interpreter returned errno 65 `No route to host`
+while the same endpoint was reachable from `nc` and `/usr/bin/python3` 3.9.6.
+Running the existing relay with the working system interpreter restored ADB:
+
+```sh
+/usr/bin/python3 tools/adb_tcp_relay.py FRAME_ADDRESS
+```
+
+This is an observed host/runtime-specific workaround, consistent with macOS local
+network handling; exact TCC settings were not inspected. It does not explain every
+prior stale-IP failure. Do not globally roll back Python, disable a firewall, or
+alter privacy permissions just to repeat this test. The ARP finder does not rely
+on that interpreter making a direct LAN TCP connection.
+
 ## Findings on this unit
 
 - The frame's displayed address changed between sessions. Connecting using the

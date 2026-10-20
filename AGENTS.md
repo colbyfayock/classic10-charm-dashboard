@@ -37,3 +37,19 @@ Before committing, inspect every changed file and image for private information.
 - Pin downloads from official sources with authoritative SHA-256 values.
 - Document what was tested on real hardware and what remains unverified.
 - Use simple, lowercase commit messages and keep commits focused.
+
+## Device debugging and screenshots
+
+- Follow `docs/device-debugging.md` for the established connection/UI workflow.
+- Use foreground-package checks and a private screenshot before asking the owner
+  to identify a screen or guessing which app is visible.
+- Screenshots are ephemeral: capture, inspect, then delete the exact image and any
+  sidecar in the same debugging cycle. Retain evidence only when the owner requests
+  it; never publish screenshots or import them into Obsidian by default.
+- Clean up known agent-created leftovers when finishing/pausing. Never delete
+  unfamiliar files or sweep backup directories to enforce screenshot cleanup.
+- Batch the proposed change/test scope, rollback, and time estimate up front.
+  Perform routine checks within that approval without repeated permission prompts;
+  ask again for material permission/risk changes or destructive operations.
+- Keep diagnostics proportional: use the existing tools and smallest useful test,
+  report time overruns promptly, and state the next step after each completed step.
