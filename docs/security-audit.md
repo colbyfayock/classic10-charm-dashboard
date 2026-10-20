@@ -9,10 +9,10 @@ leaves the frame. Raw package, socket, AppOps, and counter records remain privat
 
 On 2026-10-20 the owner chose to defer hardening while experimenting with mock or
 non-sensitive content. The proposed cleanup trials below were not approved or
-applied at that point; a later narrow browser-cleanup batch is recorded below.
-Package-disable trials and broader hardening remain deferred. This deferral is not
-a security clearance or permission to use sensitive
-accounts, credentials, or personal dashboard data.
+applied at that point; subsequent browser cleanup and two-updater disable trials
+are recorded below. Further debloating and broader hardening remain deferred. This
+deferral is not a security clearance or permission to use sensitive accounts,
+credentials, or personal dashboard data.
 
 Revisit with the USB/recovery and longer-term firmware work, and before introducing
 sensitive data:
@@ -21,6 +21,7 @@ sensitive data:
 - [ ] Investigate authenticated or USB-only ADB; do not lock out the sole connection.
 - [ ] Review network isolation and an appropriate outbound-access policy.
 - [x] Review visible optional browser reporting/search suggestions and close test tabs.
+- [x] Disable the two standalone vendor updaters with APK/data retained; runtime checks.
 - [ ] Review remaining browser permissions and reversible vendor-package cleanup.
 - [ ] Repeat bounded traffic observation, including approved startup/reboot testing.
 - [ ] Evaluate a maintained OS/browser for the exact board; root access alone does
@@ -52,7 +53,58 @@ The owner subsequently approved only the recommended low-risk browser batch:
   for a direct before/after rate comparison. Remaining traffic purpose/payload is
   unproven; disabling optional reporting is not an egress block or privacy guarantee.
 
+## Approved updater disable trial (2026-10-20)
+
+With explicit owner approval, disabled only:
+
+| Package | Version | Original state | Result |
+| --- | --- | --- | --- |
+| `com.adups.fota` | 5.26 | Default enabled, mode `0` | Disabled, mode `2` |
+| `com.softwinner.update` | 1.0 | Default enabled, mode `0` | Disabled, mode `2` |
+
+- Exact physical identity matched the verified private backup. Checked original
+  paths, versions, separate non-core UIDs, and APK hashes; recorded transaction and
+  rollback privately before writing. One package changed at a time.
+- APK paths/hashes are unchanged, both data directories remain present, and neither
+  package has a named process running at final inspection. Nothing was uninstalled,
+  deleted from `/system`, or cleared. Existing VPhoto-disable trial remains unchanged.
+- After each disable, Settings, floating Home/KISS, and Firefox/dashboard navigation
+  worked under injected input. Final Display Settings → Back → Firefox and Home →
+  KISS checks passed. Restored the existing single sample tab to fullscreen; no reboot,
+  physical-owner touch, or long-duration test was performed.
+- A strict check stopped the second write when the first Home test changed Android's
+  saved KISS preference: `always=true` with KISS/VPhoto candidates became
+  `always=false` with no saved candidate set, still naming KISS. It was unchanged
+  immediately after ADUPS disable and changed during navigation, consistent with
+  refreshing stale candidates after the earlier VPhoto disable. This is not proof of
+  an updater dependency. The owner explicitly accepted that observed baseline before
+  the second write. No default/launcher XML was rewritten; subsequent Home checks
+  preserved the accepted record. Do not describe KISS as a reverified permanent
+  "Always" selection after this change.
+- All other package enabled states, accessibility selections, and Unknown sources
+  matched baseline. No logger, embedded Settings updater, core provider, permission,
+  network rule, or ADB property was changed. Captures were inspected then deleted.
+
+Functional rollback, only when owner-approved or needed within an approved trial:
+
+```sh
+adb -s 127.0.0.1:15555 shell pm enable com.adups.fota
+adb -s 127.0.0.1:15555 shell pm enable com.softwinner.update
+```
+
+Re-enable only the affected package, then verify it. The commands above are recorded
+undo, **not an executed rollback test**. On this KitKat CLI, `enable` sets functional
+mode `1`, not original default mode `0`; do not claim byte-identical restoration.
+Do not restore live package XML. Full backup restoration remains unproven.
+
+This suspends two update mechanisms; it is not removal of all vendor update paths,
+an outbound firewall, or evidence of no personal-data transmission. Reboot persistence
+and recovery testing require a separately agreed owner-present scope.
+
 ## Findings
+
+The findings below describe the **initial pre-cleanup audit**, not the updated
+package/browser state documented above.
 
 | Priority | Observation | Consequence / limitation |
 | --- | --- | --- |

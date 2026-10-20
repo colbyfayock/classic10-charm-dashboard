@@ -17,8 +17,10 @@ This project is under active investigation. The tested frame currently has:
 The private backup is now complete and independently verified. Current research
 compares an [owner-controlled replacement OS](docs/os-feasibility.md) with a
 [reversible interim browser setup](docs/interim-setup.md) adapted from the upstream
-Modern10 guide. Frame Controls is installed and physically tested; the owner selected
-KISS as Home. VPhoto is temporarily disabled in an approved takeover-diagnosis trial,
+Modern10 guide. Frame Controls is installed and physically tested; Home currently
+opens KISS (the original owner-selected Always record was refreshed during later
+navigation; see the [cleanup record](docs/security-audit.md)). VPhoto is temporarily
+disabled in an approved takeover-diagnosis trial,
 not removed. Firefox 68.11.0 is installed with verified bytes and opens public pages;
 the upstream dashboard's main pane remains blank. Our self-contained
 [sample dashboard](dashboard/README.md) renders and supports verified 1280×800
@@ -78,7 +80,10 @@ the foreground package and screenshot, then remove temporary captures after view
 
 The [read-only security audit](docs/security-audit.md) records current risks and a
 proposed reversible cleanup order. No debloating or firewall changes were made by
-that audit; the stock software is not certified free of unwanted transmission.
+that initial audit. Subsequent approved cleanup turned off optional browser reports
+and disabled the two standalone vendor updaters with APKs/data retained. Runtime
+Settings/Home/browser checks passed; reboot and rollback execution remain untested.
+The stock software is not certified free of unwanted transmission.
 
 For credential-free LAN lookup, see [local device discovery](docs/device-discovery.md).
 Nmap and a reusable MAC-profile finder are available on the development Mac:

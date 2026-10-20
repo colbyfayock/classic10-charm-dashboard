@@ -5,6 +5,11 @@ tested, the owner selected KISS as Home, and Firefox 68.11.0 is installed/byte-v
 VPhoto is temporarily disabled in an approved diagnosis trial because Settings
 explicitly relaunched it. Its APK/data remain intact. This supersedes the earlier
 initial-install state recorded below; reboot persistence remains untested.
+Later approved cleanup disabled the standalone ADUPS and Softwinner updaters with
+APKs/data retained. During Home testing, Android refreshed the old KISS/VPhoto
+preferred-activity record: Home still opens KISS, but its saved record is no longer
+`always=true`. The owner accepted the observed baseline before continuing; no
+default XML was rewritten. See [security/cleanup results](security-audit.md).
 The owner approved a reversible interim setup while waiting for a mini-USB cable.
 Change/test scopes may be batched with explicit permissions, rollback, and time
 estimates; unexpected material permission changes still require review.

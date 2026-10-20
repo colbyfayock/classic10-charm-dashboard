@@ -36,6 +36,10 @@ is unnecessary while these instructions are specific to this frame and repositor
 - Use targeted logs to distinguish a crash, normal activity navigation, and explicit
   foreground takeover. Do not disable a package/service just because its name or
   process appears near an event. Read-only evidence and approved tests come first.
+- Prefer the Display settings intent (`android.settings.DISPLAY_SETTINGS`) for
+  navigation checks; the generic Settings entry can expose nearby Wi-Fi names.
+  Floating Back from that activity may return directly to Firefox, depending on the
+  task stack; inspect actual focus rather than assuming the parent Settings screen.
 
 ## Screenshot lifetime: capture → inspect → delete
 
