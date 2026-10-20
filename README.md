@@ -2,6 +2,11 @@
 
 Repurposing a Dragon Touch Classic10 Charm running Android 4.4.2 as an open-source family dashboard.
 
+This repository owns **frame setup and access**: backup/recovery, host tools,
+launcher/navigation, diagnostics, and hardware compatibility tests. The actual
+dashboard application is a separate project: **[Sabio](https://github.com/colbyfayock/sabio)**,
+which owns the UI, Cloudflare backend, browser enrollment, and data integrations.
+
 ## Project status
 
 This project is under active investigation. The tested frame currently has:
@@ -36,7 +41,7 @@ firmware restoration remain untested.
 
 - `docs/` — sanitized device findings and setup documentation
 - `tools/` — tested host-side utilities that contain no device-specific data
-- `dashboard/` — legacy-compatible dashboard source when implementation begins
+- `dashboard/` — local mock fixture for browser/fullscreen hardware tests; application development lives in Sabio
 - `android/` — optional Android 4.4-compatible kiosk source if browser mode is insufficient
 
 ## Safety principles

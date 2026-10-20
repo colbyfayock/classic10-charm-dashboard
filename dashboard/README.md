@@ -1,5 +1,10 @@
 # Dashboard sample
 
+Production dashboard development lives in the separate
+**[Sabio repository](https://github.com/colbyfayock/sabio)**. This directory stays here
+as a self-contained frame/browser compatibility fixture, not the application backend
+or a second dashboard implementation.
+
 `sample.html` is a self-contained, mock-only dashboard for checking the layout and
 browser behavior on older Android devices. It has no dependencies, network calls,
 accounts, or persistent storage. Weather, schedule, and checklist content is generic
