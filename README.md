@@ -69,6 +69,10 @@ For recurring connection failures, see [connection troubleshooting](docs/connect
 It distinguishes host ADB permission failures, offline protocol sessions, and basic
 LAN reachability problems; they require different investigations.
 
+For credential-free LAN lookup, see [local device discovery](docs/device-discovery.md).
+Nmap is installed on the development Mac; no Eero client login or recurring scanner
+has been configured. Live inventory and identifiers remain private.
+
 ## Privacy
 
 Enable the repository's pre-commit checks after cloning:
