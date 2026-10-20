@@ -76,6 +76,10 @@ LAN reachability problems; they require different investigations.
 For UI work, follow the [agent debugging workflow](docs/device-debugging.md): inspect
 the foreground package and screenshot, then remove temporary captures after viewing.
 
+The [read-only security audit](docs/security-audit.md) records current risks and a
+proposed reversible cleanup order. No debloating or firewall changes were made by
+that audit; the stock software is not certified free of unwanted transmission.
+
 For credential-free LAN lookup, see [local device discovery](docs/device-discovery.md).
 Nmap and a reusable MAC-profile finder are available on the development Mac:
 `python3 tools/find_device.py photo-frame`. No Eero client login or recurring scanner
