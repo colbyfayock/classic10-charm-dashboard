@@ -5,6 +5,53 @@ Read-only first pass on 2026-10-20, on the firmware documented in
 This is not a penetration test, malware verdict, or proof that no personal data
 leaves the frame. Raw package, socket, AppOps, and counter records remain private.
 
+## Status: deferred security backlog
+
+On 2026-10-20 the owner chose to defer hardening while experimenting with mock or
+non-sensitive content. The proposed cleanup trials below were not approved or
+applied at that point; a later narrow browser-cleanup batch is recorded below.
+Package-disable trials and broader hardening remain deferred. This deferral is not
+a security clearance or permission to use sensitive
+accounts, credentials, or personal dashboard data.
+
+Revisit with the USB/recovery and longer-term firmware work, and before introducing
+sensitive data:
+
+- [ ] Prove USB management/recovery and retain a working rollback/escape path.
+- [ ] Investigate authenticated or USB-only ADB; do not lock out the sole connection.
+- [ ] Review network isolation and an appropriate outbound-access policy.
+- [x] Review visible optional browser reporting/search suggestions and close test tabs.
+- [ ] Review remaining browser permissions and reversible vendor-package cleanup.
+- [ ] Repeat bounded traffic observation, including approved startup/reboot testing.
+- [ ] Evaluate a maintained OS/browser for the exact board; root access alone does
+  not address the obsolete software or establish privacy.
+
+## Approved browser cleanup (2026-10-20)
+
+The owner subsequently approved only the recommended low-risk browser batch:
+
+- In Firefox Settings → Privacy → Data choices, changed **Crash Reporter** and
+  **Firefox Health Report** from checked to unchecked. Revisited and confirmed both
+  remained unchecked. Undo is to restore those two checkboxes; originals are also
+  recorded privately.
+- **Telemetry**, **Mozilla Location Service** sharing, and **Show search suggestions**
+  were already unchecked and left unchanged. No separate studies control was found
+  in the inspected UI; no unsupported preference edits were attempted.
+- Closed the agent-opened Home/public-dashboard tabs and duplicate mock tabs, leaving
+  one local mock sample. Restored and visually verified true fullscreen with Frame
+  Controls available. Public pages can be reopened; no history/profile data was cleared.
+- Safe Browsing/TLS controls, password-saving behavior, Android permissions, Unknown
+  sources, package states, saved Home, navigation, network policy, and ADB were not
+  changed. No package-disable or removal approval is implied.
+- All inspection screenshots and helper sidecars were deleted. Device identity and
+  verified-backup match checked before changes; Home/accessibility/package enabled
+  states and Unknown sources read back unchanged afterward. Settings were revisited,
+  but no process restart or device reboot was performed.
+- Firefox counters still increased by about 12 KB received and 4 KB transmitted in
+  a brief 30-second follow-up. Different intervals/conditions make this unsuitable
+  for a direct before/after rate comparison. Remaining traffic purpose/payload is
+  unproven; disabling optional reporting is not an egress block or privacy guarantee.
+
 ## Findings
 
 | Priority | Observation | Consequence / limitation |
